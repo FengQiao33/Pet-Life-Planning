@@ -140,23 +140,38 @@ function buildPlan({ species, ageYears, health, notes }) {
   };
 }
 
-export default async function handler(request) {
-  if (request.method !== "POST") return bad("Only POST is supported", 405);
-  let body;
-  try {
-    body = await request.json();
-  } catch {
-    return bad("Invalid JSON body");
+// ESA Pages 边缘函数标准格式：导出包含 fetch 函数的对象
+export default {
+  async fetch(request) {
+    // 只支持 POST 方法
+    if (request.method !== "POST") {
+      return bad("Only POST is supported", 405);
+    }
+
+    // 解析请求体
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return bad("Invalid JSON body");
+    }
+
+    // 提取并校验参数
+    const species = String(body?.species || "").trim();
+    const ageYears = Number(body?.ageYears);
+    const health = normalizeHealth(body?.health);
+    const notes = body?.notes == null ? "" : String(body.notes);
+
+    // 参数校验
+    if (!species) {
+      return bad("species is required");
+    }
+    if (!Number.isFinite(ageYears) || ageYears < 0 || ageYears > 40) {
+      return bad("ageYears is invalid");
+    }
+
+    // 生成计划并返回
+    return json(buildPlan({ species, ageYears, health, notes }));
   }
-
-  const species = String(body?.species || "").trim();
-  const ageYears = Number(body?.ageYears);
-  const health = normalizeHealth(body?.health);
-  const notes = body?.notes == null ? "" : String(body.notes);
-
-  if (!species) return bad("species is required");
-  if (!Number.isFinite(ageYears) || ageYears < 0 || ageYears > 40) return bad("ageYears is invalid");
-
-  return json(buildPlan({ species, ageYears, health, notes }));
-}
+};
 
