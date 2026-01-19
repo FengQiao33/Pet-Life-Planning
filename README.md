@@ -4,7 +4,7 @@
 
 **本项目由阿里云ESA提供加速、计算和保护**
 
-![ESA](./docs/esa-badge.svg)
+![ESA](./docs/esa-badge.png)
 
 ### 作品亮点
 
