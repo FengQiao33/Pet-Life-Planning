@@ -1,0 +1,17 @@
+{
+  // 项目名称
+  "name": "pet-life-planning",
+  // 边缘函数入口文件路径（相对于项目根目录）
+  "entry": "./functions/api/plan.js",
+  // 安装依赖命令
+  "installCommand": "npm install",
+  // 构建静态前端资源的命令
+  "buildCommand": "npm run build",
+  // 静态资源配置
+  "assets": {
+    // 静态资源目录（build 命令输出的目录）
+    "directory": "./dist",
+    // SPA 应用路由策略
+    "notFoundStrategy": "singlePageApplication"
+  }
+}
